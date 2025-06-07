@@ -1,0 +1,105 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #f7f3eb;  /* Warm, paper-like background */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2c3e50;
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+h1 {
+    color: #2c3e50;
+    margin-bottom: 2.5rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.time-display {
+    font-size: 4.5rem;
+    font-weight: 200;
+    color: #2c3e50;
+    letter-spacing: 2px;
+    font-family: 'Noto Sans JP', sans-serif;
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    border: none;
+    border-radius: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+#start {
+    background-color: #a5b4a4;  /* Muted sage green */
+    color: #ffffff;
+}
+
+#pause {
+    background-color: #d4b5a0;  /* Muted terracotta */
+    color: #ffffff;
+}
+
+#reset {
+    background-color: #e8e4d9;  /* Warm beige */
+    color: #2c3e50;
+}
+
+.mode-buttons {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.mode {
+    background-color: #f7f3eb;  /* Matching body background */
+    color: #2c3e50;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mode.active {
+    background-color: #2c3e50;
+    color: #ffffff;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+button:active {
+    transform: translateY(0);
+} 
