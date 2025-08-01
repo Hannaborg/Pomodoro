@@ -3,26 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro Timer</title>
+    <title>Swiss Pomodoro</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍅</text></svg>">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Pomodoro Timer</h1>
-        <div class="timer">
-            <div class="time-display">25:00</div>
-            <div class="controls">
-                <button id="start">Start</button>
-                <button id="pause">Pause</button>
-                <button id="reset">Reset</button>
-            </div>
-            <div class="mode-buttons">
-                <button class="mode active" data-time="25">Pomodoro</button>
-                <button class="mode" data-time="5">Short Break</button>
-                <button class="mode" data-time="15">Long Break</button>
+        <div class="swiss-clock" id="clock">
+            <div class="clock-face">
+                <!-- Timer overlay -->
+                <div class="timer-overlay" id="timerOverlay"></div>
+                
+                <!-- Clock markers -->
+                <div class="marker marker-12"></div>
+                <div class="marker marker-3"></div>
+                <div class="marker marker-6"></div>
+                <div class="marker marker-9"></div>
+                
+                <!-- Clock hands -->
+                <div class="hand hour-hand"></div>
+                <div class="hand minute-hand"></div>
+                <div class="hand second-hand">
+                    <div class="second-hand-tip"></div>
+                </div>
+                
+                <!-- Center dot -->
+                <div class="center-dot"></div>
             </div>
         </div>
+        
+        <!-- Timer status -->
+        <div class="timer-status" id="timerStatus">
+            <span class="status-text">Click clock to start 1-hour focus session</span>
+        </div>
     </div>
+    
     <script src="script.js"></script>
 </body>
 </html> 
