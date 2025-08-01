@@ -27,7 +27,8 @@ class SwissPomodoroTimer {
             lastSessionDate: null,
             sessionHistory: [],
             dailyStats: {},
-            weeklyStats: {}
+            weeklyStats: {},
+            dailyGoals: {}
         };
         
         // Initialize
@@ -36,6 +37,7 @@ class SwissPomodoroTimer {
         this.setupEventListeners();
         this.startClock();
         this.updateUI();
+        this.checkDailyGoal();
     }
     
     setupEventListeners() {
@@ -238,6 +240,101 @@ class SwissPomodoroTimer {
             .map(([time, count]) => ({ time, count }));
     }
     
+    checkDailyGoal() {
+        const today = new Date().toDateString();
+        const lastGoalDate = localStorage.getItem('lastGoalDate');
+        
+        // Check if this is the first visit of the day
+        if (lastGoalDate !== today) {
+            this.showGoalSettingPopup();
+        }
+    }
+    
+    showGoalSettingPopup() {
+        // Create popup overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'goal-overlay';
+        overlay.innerHTML = `
+            <div class="goal-popup">
+                <h2>Set Your Daily Goal</h2>
+                <p>How many Pomodoro sessions would you like to complete today?</p>
+                <div class="goal-input">
+                    <input type="number" id="dailyGoalInput" min="1" max="12" value="4" />
+                    <span class="goal-label">sessions</span>
+                </div>
+                <div class="goal-buttons">
+                    <button id="setGoalBtn" class="goal-btn primary">Set Goal</button>
+                    <button id="skipGoalBtn" class="goal-btn secondary">Skip</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+        
+        // Focus on input
+        const input = document.getElementById('dailyGoalInput');
+        input.focus();
+        input.select();
+        
+        // Add event listeners
+        document.getElementById('setGoalBtn').addEventListener('click', () => {
+            this.setDailyGoal();
+        });
+        
+        document.getElementById('skipGoalBtn').addEventListener('click', () => {
+            this.skipDailyGoal();
+        });
+        
+        // Allow Enter key to set goal
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.setDailyGoal();
+            }
+        });
+        
+        // Allow Escape key to skip
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                this.skipDailyGoal();
+            }
+        });
+    }
+    
+    setDailyGoal() {
+        const input = document.getElementById('dailyGoalInput');
+        const goal = parseInt(input.value) || 4;
+        const today = new Date().toDateString();
+        
+        // Set the daily goal
+        this.sessionStats.dailyGoals[today] = goal;
+        localStorage.setItem('lastGoalDate', today);
+        
+        // Save and update UI
+        this.saveSessionStats();
+        this.updateUI();
+        
+        // Remove popup
+        this.removeGoalPopup();
+    }
+    
+    skipDailyGoal() {
+        const today = new Date().toDateString();
+        localStorage.setItem('lastGoalDate', today);
+        this.removeGoalPopup();
+    }
+    
+    removeGoalPopup() {
+        const overlay = document.querySelector('.goal-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+    
+    getDailyGoal() {
+        const today = new Date().toDateString();
+        return this.sessionStats.dailyGoals[today] || 0;
+    }
+    
     updateTimerOverlay() {
         if (!this.isTimerActive || !this.startTime || !this.endTime) {
             this.timerOverlay.style.background = 'transparent';
@@ -265,15 +362,18 @@ class SwissPomodoroTimer {
     
     updateUI() {
         const dailyStats = this.getDailyStats();
+        const dailyGoal = this.getDailyGoal();
+        
+        // Format today's sessions display
+        const todayDisplay = dailyGoal > 0 ? `${dailyStats.sessions}/${dailyGoal} completed` : `${dailyStats.sessions} sessions`;
         
         // Update status text
         if (!this.isTimerActive) {
             this.timerStatus.innerHTML = `
-                <span class="status-text">Click to start</span>
+                <span class="status-text">CLICK TO START</span>
                 <div class="session-stats">
-                    <span class="stat">Today: ${dailyStats.sessions} sessions</span>
-                    <span class="stat">Total: ${this.sessionStats.totalSessions}</span>
-                    <span class="stat">Streak: ${this.sessionStats.currentStreak} days</span>
+                    <div class="stat-line">TODAY: ${todayDisplay.toUpperCase()}</div>
+                    <div class="stat-line">STREAK: ${this.sessionStats.currentStreak} DAYS</div>
                 </div>
             `;
             // Reset tab title when timer is not active
@@ -286,9 +386,8 @@ class SwissPomodoroTimer {
             this.timerStatus.innerHTML = `
                 <span class="status-text">${timeString}</span>
                 <div class="session-stats">
-                    <span class="stat">Today: ${dailyStats.sessions} sessions</span>
-                    <span class="stat">Total: ${this.sessionStats.totalSessions}</span>
-                    <span class="stat">Streak: ${this.sessionStats.currentStreak} days</span>
+                    <div class="stat-line">TODAY: ${todayDisplay.toUpperCase()}</div>
+                    <div class="stat-line">STREAK: ${this.sessionStats.currentStreak} DAYS</div>
                 </div>
             `;
             

@@ -178,38 +178,158 @@ body {
 /* Timer status */
 .timer-status {
     text-align: center;
-    color: #000000;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 1.5rem;
-    font-weight: 300;
-    letter-spacing: 2px;
-    margin-top: 1rem;
+    color: #333333;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 100;
+    letter-spacing: 1.5px;
+    margin-top: 2.5rem;
 }
 
 .status-text {
     display: block;
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
+    text-transform: uppercase;
 }
 
 /* Session stats styling */
 .session-stats {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    font-size: 0.85rem;
+    color: #333333;
+    font-weight: 100;
+    letter-spacing: 0.8px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.stat-line {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    line-height: 1.5;
+    font-stretch: condensed;
+}
+
+/* Goal setting popup styles */
+.goal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
     justify-content: center;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    font-size: 0.8rem;
-    color: #666;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.goal-popup {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    border: 1px solid #e0e0e0;
+}
+
+.goal-popup h2 {
+    color: #000000;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.5rem;
     font-weight: 300;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+}
+
+.goal-popup p {
+    color: #666;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.goal-input {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.goal-input input {
+    width: 80px;
+    padding: 0.8rem;
+    border: 2px solid #d0d0d0;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    text-align: center;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 300;
+    color: #000000;
+    background: #ffffff;
+    transition: border-color 0.2s ease;
+}
+
+.goal-input input:focus {
+    outline: none;
+    border-color: #000000;
+}
+
+.goal-label {
+    color: #666;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+.goal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.goal-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+    cursor: pointer;
+    transition: all 0.2s ease;
     letter-spacing: 0.5px;
 }
 
-.stat {
+.goal-btn.primary {
+    background: #000000;
+    color: #ffffff;
+}
+
+.goal-btn.primary:hover {
+    background: #333333;
+    transform: translateY(-1px);
+}
+
+.goal-btn.secondary {
     background: #f5f5f5;
-    padding: 0.3rem 0.6rem;
-    border-radius: 12px;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum";
+    color: #666;
+    border: 1px solid #d0d0d0;
+}
+
+.goal-btn.secondary:hover {
+    background: #e0e0e0;
+    color: #333;
 }
 
 /* Responsive design */
