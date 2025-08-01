@@ -19,8 +19,20 @@ class SwissPomodoroTimer {
         this.startTime = null; // Store when timer started
         this.endTime = null; // Store the target end time
         
+        // Session management
+        this.sessionStats = {
+            totalSessions: 0,
+            currentStreak: 0,
+            todaySessions: 0,
+            lastSessionDate: null,
+            sessionHistory: [],
+            dailyStats: {},
+            weeklyStats: {}
+        };
+        
         // Initialize
         this.loadState();
+        this.loadSessionStats();
         this.setupEventListeners();
         this.startClock();
         this.updateUI();
@@ -109,9 +121,121 @@ class SwissPomodoroTimer {
     }
     
     timerComplete() {
+        this.recordCompletedSession();
         this.stopTimer();
         this.playNotificationSound();
         this.showCompletionNotification();
+    }
+    
+    recordCompletedSession() {
+        const now = new Date();
+        const today = now.toDateString();
+        const sessionData = {
+            id: Date.now(),
+            startTime: this.startTime,
+            endTime: now,
+            duration: 60, // 1 hour in minutes
+            completed: true,
+            timestamp: now.getTime()
+        };
+        
+        // Update session stats
+        this.sessionStats.totalSessions++;
+        this.sessionStats.sessionHistory.push(sessionData);
+        
+        // Update daily stats
+        if (!this.sessionStats.dailyStats[today]) {
+            this.sessionStats.dailyStats[today] = {
+                sessions: 0,
+                totalTime: 0,
+                completedSessions: 0
+            };
+        }
+        this.sessionStats.dailyStats[today].sessions++;
+        this.sessionStats.dailyStats[today].totalTime += 60;
+        this.sessionStats.dailyStats[today].completedSessions++;
+        
+        // Update streak
+        this.updateStreak(today);
+        
+        // Update today's sessions
+        this.sessionStats.todaySessions = this.sessionStats.dailyStats[today].sessions;
+        
+        // Save session stats
+        this.saveSessionStats();
+    }
+    
+    updateStreak(today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayString = yesterday.toDateString();
+        
+        if (this.sessionStats.lastSessionDate === yesterdayString) {
+            // Consecutive day
+            this.sessionStats.currentStreak++;
+        } else if (this.sessionStats.lastSessionDate !== today) {
+            // New day, not consecutive
+            this.sessionStats.currentStreak = 1;
+        }
+        
+        this.sessionStats.lastSessionDate = today;
+    }
+    
+    getDailyStats() {
+        const today = new Date().toDateString();
+        return this.sessionStats.dailyStats[today] || {
+            sessions: 0,
+            totalTime: 0,
+            completedSessions: 0
+        };
+    }
+    
+    getWeeklyStats() {
+        const now = new Date();
+        const weekStart = new Date(now);
+        weekStart.setDate(now.getDate() - now.getDay()); // Start of week (Sunday)
+        
+        let weeklySessions = 0;
+        let weeklyTime = 0;
+        let weeklyCompleted = 0;
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(weekStart);
+            date.setDate(weekStart.getDate() + i);
+            const dateString = date.toDateString();
+            
+            if (this.sessionStats.dailyStats[dateString]) {
+                weeklySessions += this.sessionStats.dailyStats[dateString].sessions;
+                weeklyTime += this.sessionStats.dailyStats[dateString].totalTime;
+                weeklyCompleted += this.sessionStats.dailyStats[dateString].completedSessions;
+            }
+        }
+        
+        return {
+            sessions: weeklySessions,
+            totalTime: weeklyTime,
+            completedSessions: weeklyCompleted
+        };
+    }
+    
+    getBestFocusTimes() {
+        const timeSlots = {};
+        
+        this.sessionStats.sessionHistory.forEach(session => {
+            const hour = session.startTime.getHours();
+            const timeSlot = `${hour}:00-${hour + 1}:00`;
+            
+            if (!timeSlots[timeSlot]) {
+                timeSlots[timeSlot] = 0;
+            }
+            timeSlots[timeSlot]++;
+        });
+        
+        // Sort by frequency and return top 3
+        return Object.entries(timeSlots)
+            .sort(([,a], [,b]) => b - a)
+            .slice(0, 3)
+            .map(([time, count]) => ({ time, count }));
     }
     
     updateTimerOverlay() {
@@ -140,20 +264,36 @@ class SwissPomodoroTimer {
     }
     
     updateUI() {
+        const dailyStats = this.getDailyStats();
+        
         // Update status text
         if (!this.isTimerActive) {
-            this.timerStatus.innerHTML = '<span class="status-text">Click to start</span>';
+            this.timerStatus.innerHTML = `
+                <span class="status-text">Click to start</span>
+                <div class="session-stats">
+                    <span class="stat">Today: ${dailyStats.sessions} sessions</span>
+                    <span class="stat">Total: ${this.sessionStats.totalSessions}</span>
+                    <span class="stat">Streak: ${this.sessionStats.currentStreak} days</span>
+                </div>
+            `;
             // Reset tab title when timer is not active
-            document.title = 'Swiss Pomodoro';
+            document.title = 'Pomodoro';
         } else {
             const minutes = Math.floor(this.timeRemaining / 60);
             const seconds = this.timeRemaining % 60;
             const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             
-            this.timerStatus.innerHTML = `<span class="status-text">${timeString}</span>`;
+            this.timerStatus.innerHTML = `
+                <span class="status-text">${timeString}</span>
+                <div class="session-stats">
+                    <span class="stat">Today: ${dailyStats.sessions} sessions</span>
+                    <span class="stat">Total: ${this.sessionStats.totalSessions}</span>
+                    <span class="stat">Streak: ${this.sessionStats.currentStreak} days</span>
+                </div>
+            `;
             
             // Update tab title with countdown
-            document.title = `${timeString} Swiss Pomodoro`;
+            document.title = `${timeString} Pomodoro`;
         }
     }
     
@@ -187,8 +327,8 @@ class SwissPomodoroTimer {
         // Show browser notification if permitted
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('Focus Session Complete!', {
-                body: 'Your 1-hour focus session has ended. Great work!',
-                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🕐</text></svg>'
+                body: `Great work! You've completed ${this.sessionStats.totalSessions} sessions with a ${this.sessionStats.currentStreak}-day streak!`,
+                icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🍅</text></svg>'
             });
         }
     }
@@ -202,6 +342,10 @@ class SwissPomodoroTimer {
             timestamp: Date.now()
         };
         localStorage.setItem('swissPomodoroState', JSON.stringify(state));
+    }
+    
+    saveSessionStats() {
+        localStorage.setItem('swissPomodoroStats', JSON.stringify(this.sessionStats));
     }
     
     loadState() {
@@ -230,6 +374,20 @@ class SwissPomodoroTimer {
                     }
                 }, 1000);
             }
+        }
+    }
+    
+    loadSessionStats() {
+        const saved = localStorage.getItem('swissPomodoroStats');
+        if (saved) {
+            this.sessionStats = JSON.parse(saved);
+            
+            // Convert date strings back to Date objects for session history
+            this.sessionStats.sessionHistory = this.sessionStats.sessionHistory.map(session => ({
+                ...session,
+                startTime: new Date(session.startTime),
+                endTime: new Date(session.endTime)
+            }));
         }
     }
 }
