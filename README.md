@@ -1,28 +1,69 @@
-# Pomodoro Timer
+# Swiss Pomodoro 🍅⏰
 
-A simple, clean, and modern Pomodoro timer web application. This timer helps you stay focused using the Pomodoro Technique, which involves working in focused intervals followed by short breaks.
+A beautiful, minimalist 1-hour focus timer inspired by Swiss railway clocks. Displays your current local time with a visual countdown overlay for focused work sessions.
 
-## Features
+## ✨ Features
 
-- 25-minute Pomodoro work sessions
-- 5-minute short breaks
-- 15-minute long breaks
-- Clean, modern interface
-- Audio notification when timer completes
-- Start, pause, and reset functionality
+### 🕐 **Real-Time Clock**
+- Shows current local time with smooth, second-by-second updates
+- Swiss railway clock design with red second hand tip
+- Clean, minimalist face with cardinal markers (12, 3, 6, 9)
 
-## How to Use
+### ⏱️ **1-Hour Focus Timer**
+- **Click to start** - Single click begins 1-hour countdown
+- **Visual countdown** - Red overlay fades clockwise, revealing white
+- **Minute hand sync** - Appears to "wipe away" the red overlay
+- **Click to stop** - Click again to stop early
 
-1. Open `index.html` in your web browser
-2. Click "Start" to begin the timer
-3. Use "Pause" to pause the timer
-4. Use "Reset" to reset the current session
-5. Switch between different modes (Pomodoro, Short Break, Long Break) using the mode buttons
+### 💻 **Smart Interface**
+- **Tab countdown** - Browser tab shows: `45:23 Swiss Pomodoro`
+- **Status display** - Shows "Click to start" or time remaining
+- **Tomato favicon** - 🍅 emoji for authentic Pomodoro branding
+- **State persistence** - Timer continues after page refresh
 
-## The Pomodoro Technique
+## 🚀 How It Works
 
-The Pomodoro Technique is a time management method developed by Francesco Cirillo. It uses a timer to break work into intervals, traditionally 25 minutes in length, separated by short breaks. Each interval is known as a "pomodoro", the Italian word for tomato, after the tomato-shaped kitchen timer Cirillo used as a university student.
+1. **Click the clock** - Timer starts, face becomes red
+2. **Watch the fade** - White reveals clockwise as time progresses
+3. **Minute hand moves** - Smoothly "wipes away" the red overlay
+4. **Session ends** - After 1 hour or when you click to stop
+5. **Audio alert** - Gentle notification when complete
 
-## Browser Support
+## 🎨 Design
 
-This application works in all modern browsers that support the Web Audio API. 
+### **Swiss Railway Clock Aesthetics**
+- White background with black hands
+- Red second hand tip (classic Swiss signature)
+- Helvetica typography
+- Perfect proportions and smooth animations
+
+### **Visual Countdown System**
+- Starts entirely red, fades clockwise
+- Synchronized with real clock movement
+- Minute hand aligns with fade edge
+- Smooth transitions and hover effects
+
+## 🛠️ Technical
+
+### **Clock Mechanics**
+- Real-time updates every second
+- Precise angle calculations for smooth movement
+- Conic gradient overlay for visual countdown
+- Local storage for state persistence
+
+### **Browser Integration**
+- Dynamic tab title with countdown
+- Web Audio API for notifications
+- Responsive design for all devices
+- Cross-browser compatibility
+
+## 🎯 Perfect For
+
+- **Deep work sessions** - 1-hour focused concentration
+- **Visual time tracking** - See progress without numbers
+- **Minimal distractions** - Clean, elegant interface
+- **Productivity workflows** - Stay aware of time across tabs
+
+---
+
+**A precise, beautiful focus timer with Swiss reliability** 🍅⏰✨ 
